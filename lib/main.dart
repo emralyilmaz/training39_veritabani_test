@@ -18,6 +18,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     dbhelper = DatabaseHelper();
     ekle();
+    guncelle();
   }
 
   @override
@@ -34,5 +35,10 @@ class _MyAppState extends State<MyApp> {
   goster() async {
     var s = await dbhelper.personelleriGetir();
     print(s);
+  }
+
+  guncelle() async {
+    per.isim = "Osman";
+    await dbhelper.personeliGuncelle(per);
   }
 }

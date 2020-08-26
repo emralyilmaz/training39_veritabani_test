@@ -68,4 +68,19 @@ class DatabaseHelper {
     // eklenme tarihi değiştirilmek istenirse orderBy kullanılır. burada idsi sondan sıralanacak şekilde yapıldı.
     return sonuc;
   }
+
+  Future<int> personeliGuncelle(Personel per) async {
+    var db = await getDatabase(); // database'e erişildi.
+    var sonuc = await db.update(_personelTablo, per.toMap(),
+        where: "$_sutunId", whereArgs: [per.id]);
+    // where kısmında hangi sütuna göre güncelleneceği belirlenir.
+    return sonuc;
+  }
+
+  Future<int> personelSil(int id) async {
+    var db = await getDatabase();
+    var sonuc = await db
+        .delete(_personelTablo, where: "$_sutunId = ?", whereArgs: [id]);
+    return sonuc;
+  }
 }
