@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:training39_veritabani_test/models/personel.dart';
+import 'package:training39_veritabani_test/tools/database.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,14 +10,29 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  var dbhelper;
+  var per;
+
+  @override
+  void initState() {
+    super.initState();
+    dbhelper = DatabaseHelper();
+    ekle();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Personel per = Personel.withID(id: 1, isim: "Ali", aktif: true);
-    Map m = per.toMap();
-    print(m);
-
-    Personel kopya = Personel.formMap(m);
-    print(kopya);
+    goster();
     return Container();
+  }
+
+  ekle() async {
+    per = Personel(isim: "Ali", aktif: true);
+    await dbhelper.personelEkle(per);
+  }
+
+  goster() async {
+    var s = await dbhelper.personelleriGetir();
+    print(s);
   }
 }

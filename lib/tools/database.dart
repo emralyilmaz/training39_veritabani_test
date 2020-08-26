@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
+import 'package:training39_veritabani_test/models/personel.dart';
 
 class DatabaseHelper {
   static DatabaseHelper _databaseHelper;
@@ -41,15 +42,30 @@ class DatabaseHelper {
     // (join birleştirme yapacak, database'i oluşturulacak yere kadar olan yolu alıp,
     // database de yazıp birleştirilecek)
 
-    var personelDB = await openDatabase(path, version: 1, onCreate: _createDB);
+    var personelDB =
+        await openDatabase(path, version: 1, onCreate: _createTablo);
     // versiyon değişikliklerin kontrolü için var.
     // onCreate ise database açılırken tablo verilerini de aktarmak için var.
 
     return personelDB;
   }
 
-  Future _createDB(Database db, int versiyon) async {
+  Future _createTablo(Database db, int versiyon) async {
     await db.execute(
-        "CREATE TABLE $_personelTablo($_sutunId INTEGER PRIMARY KEY AUTOINCREMENT), $_sutunIsim TEXT, $_sutunAktif TEXT)");
+        "CREATE TABLE $_personelTablo($_sutunId INTEGER PRIMARY KEY AUTOINCREMENT, $_sutunIsim TEXT, $_sutunAktif TEXT)");
+  }
+
+  Future<int> personelEkle(Personel per) async {
+    var db = await getDatabase();
+    var sonuc = await db.insert(
+        _personelTablo, per.toMap()); // burada ekleme işlemi gerçekleştirildi.
+    return sonuc; // int olduğu için 0 gelirse hata var demektir. başka bir sayı gelirse sıkıntı yok.
+  }
+
+  Future<List<Map<String, dynamic>>> personelleriGetir() async {
+    var db = await getDatabase();
+    var sonuc = await db.query(_personelTablo, orderBy: "$_sutunId DESC");
+    // eklenme tarihi değiştirilmek istenirse orderBy kullanılır. burada idsi sondan sıralanacak şekilde yapıldı.
+    return sonuc;
   }
 }
